@@ -1,0 +1,13 @@
+FROM golang:1.21
+
+WORKDIR /fase-4-hf-client/src/app
+
+COPY . .
+
+ENV GOPATH=/fase-4-hf-client
+
+RUN go build -ldflags "-w -s" -o bin/hermesfoods cmd/http/*.go
+
+ENTRYPOINT ["./bin/hermesfoods"]
+
+EXPOSE 8080
