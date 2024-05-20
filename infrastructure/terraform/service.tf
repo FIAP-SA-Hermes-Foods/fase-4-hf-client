@@ -14,6 +14,7 @@ resource "kubernetes_service" "hf-client-service" {
       name        = "hf-client-http-port"
       port        = 8080
       target_port = 8080
+      node_port   = 30080
     }
 
     port {
