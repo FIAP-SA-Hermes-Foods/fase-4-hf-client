@@ -1,0 +1,41 @@
+kind get clusters
+
+---
+kubectl delete namespace hf-local-cluster
+kubectl create namespace hf-local-cluster
+
+---
+build da imagem:
+docker build -t localhost:5000/app-go-order-http:latest -f ./infrastructure/docker/Dockerfile.go_app_http .
+docker build -t localhost:5000/app-go-order-rpc:latest -f ./infrastructure/docker/Dockerfile.go_app_rpc .
+
+---
+*Conecte o registro ao cluster*: Execute o seguinte comando para conectar o registro Docker local (porta 5000) ao seu cluster Kind 
+kind load docker-image localhost:5000/app-go-http:latest -n my-context
+
+kind load docker-image localhost:5000/app-go-order-http:latest -n hf-local-cluster
+kind load docker-image localhost:5000/app-go-order-rpc:latest -n hf-local-cluster
+
+---
+enviar a imagem:a
+docker push localhost:5000/sua-imagem:sua-tag
+
+docker push localhost:5000/app-go-order-http:latest
+docker push localhost:5000/app-go-order-rpc:latest
+
+---
+para ver os logs
+kubectl describe pod nome-do-meu-pod -n dev
+kubectl describe pod hf-client-deployment -n dev
+
+---excluir----
+kubectl delete deployment hf-client-deployment -n dev
+kubectl delete service hf-client-service -n dev
+
+---
+localhost:5000/app-go-rpc:latest
+localhost:5000/app-go-http:latest
+
+-- Esse comando mostra as coisas do Nodeport
+kubectl describe service hf-client-service -n dev
+
