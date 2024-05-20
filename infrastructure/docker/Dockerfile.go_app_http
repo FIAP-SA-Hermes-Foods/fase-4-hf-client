@@ -1,4 +1,4 @@
-FROM golang:1.21
+FROM golang:1.22
 
 WORKDIR /fase-4-hf-client/src/app
 
@@ -6,7 +6,7 @@ COPY . .
 
 ENV GOPATH=/fase-4-hf-client
 
-RUN go build -ldflags "-w -s" -o bin/hermesfoods cmd/http/*.go
+RUN go build -ldflags "-w -s" -o bin/hermesfoods cmd/http/main.go
 
 ENTRYPOINT ["./bin/hermesfoods"]
 
