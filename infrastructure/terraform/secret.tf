@@ -1,6 +1,6 @@
-resource "kubernetes_secret" "hfregcred" {
+resource "kubernetes_secret" "hf_deploy_secret" {
   metadata {
-    name = "hfregcred"
+    name = "hf-deploy-secret"
     namespace = "dev"
   }
 
