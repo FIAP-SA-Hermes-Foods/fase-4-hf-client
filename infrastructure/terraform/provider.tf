@@ -1,15 +1,14 @@
 terraform { 
     required_providers { 
-        kubernetes = { 
-            source = "hashicorp/kubernetes"
+        kubernetes = {
+            source  = "hashicorp/kubernetes"
+            version = "~> 2.30" 
         } 
     }
 }
 
 provider "kubernetes" { 
-    config_path = "~/.kube/config"
+    config_path    = "~/.kube/config"
+    config_context = "kind-hf-local-cluster"
+    insecure = true
 }
-
-/*
-o que estava causando erro era que estavamos usando um "mycloud" ao inves de "kubernetes" na linha 3
-*/
