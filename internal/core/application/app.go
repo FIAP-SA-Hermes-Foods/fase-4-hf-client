@@ -7,6 +7,7 @@ import (
 	"fase-4-hf-client/internal/core/domain/entity/dto"
 	"fase-4-hf-client/internal/core/domain/repository"
 	"fase-4-hf-client/internal/core/domain/useCase"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -75,12 +76,14 @@ func (app application) SaveClient(client dto.RequestClient) (*dto.OutputClient, 
 		return nil, err
 	}
 
+	createdAt := time.Now().Format("02-01-2006 15:04:05")
+
 	clientDB := dto.ClientDB{
 		UUID:      uuid.NewString(),
 		Name:      client.Name,
-		CPF:       client.Name,
+		CPF:       client.CPF,
 		Email:     client.Email,
-		CreatedAt: client.CreatedAt,
+		CreatedAt: createdAt,
 	}
 
 	cOutDb, err := app.SaveClientRepository(clientDB)

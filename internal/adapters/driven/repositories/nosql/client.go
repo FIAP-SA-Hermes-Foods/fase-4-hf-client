@@ -5,9 +5,10 @@ import (
 	"fase-4-hf-client/internal/core/domain/entity/dto"
 	"fase-4-hf-client/internal/core/domain/repository"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 var _ repository.ClientRepository = (*userDB)(nil)
@@ -23,9 +24,9 @@ func NewClientRepository(database db.NoSQLDatabase, tableName string) *userDB {
 
 func (c *userDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 	filter := "cpf = :value"
-	attrSearch := map[string]*dynamodb.AttributeValue{
-		":value": {
-			S: aws.String(cpf),
+	attrSearch := map[string]types.AttributeValue{
+		":value": &types.AttributeValueMemberS{
+			Value: cpf,
 		},
 	}
 
@@ -43,7 +44,7 @@ func (c *userDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 	var userList = make([]dto.ClientDB, 0)
 	for _, item := range result.Items {
 		var c dto.ClientDB
-		if err := dynamodbattribute.UnmarshalMap(item, &c); err != nil {
+		if err := attributevalue.UnmarshalMap(item, &c); err != nil {
 			return nil, err
 		}
 		userList = append(userList, c)
@@ -58,21 +59,21 @@ func (c *userDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 
 func (c *userDB) SaveClient(client dto.ClientDB) (*dto.ClientDB, error) {
 
-	putItem := map[string]*dynamodb.AttributeValue{
-		"uuid": {
-			S: aws.String(client.UUID),
+	putItem := map[string]types.AttributeValue{
+		"uuid": &types.AttributeValueMemberS{
+			Value: client.UUID,
 		},
-		"name": {
-			S: aws.String(client.Name),
+		"name": &types.AttributeValueMemberS{
+			Value: client.Name,
 		},
-		"cpf": {
-			S: aws.String(client.CPF),
+		"cpf": &types.AttributeValueMemberS{
+			Value: client.CPF,
 		},
-		"email": {
-			S: aws.String(client.Email),
+		"email": &types.AttributeValueMemberS{
+			Value: client.Email,
 		},
-		"created_at": {
-			S: aws.String(client.CreatedAt),
+		"createdAt": &types.AttributeValueMemberS{
+			Value: client.CreatedAt,
 		},
 	}
 
@@ -89,9 +90,15 @@ func (c *userDB) SaveClient(client dto.ClientDB) (*dto.ClientDB, error) {
 
 	var out *dto.ClientDB
 
-	if err := dynamodbattribute.UnmarshalMap(putOut.Attributes, &out); err != nil {
+	if err := attributevalue.UnmarshalMap(putOut.Attributes, &out); err != nil {
 		return nil, err
 	}
+
+	out.UUID = client.UUID
+	out.Name = client.Name
+	out.CPF = client.CPF
+	out.Email = client.Email
+	out.CreatedAt = client.CreatedAt
 
 	return out, nil
 }

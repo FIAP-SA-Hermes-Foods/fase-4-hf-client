@@ -3,7 +3,7 @@ package mocks
 import (
 	"strings"
 
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 )
 
 // Mock DB NoSQL

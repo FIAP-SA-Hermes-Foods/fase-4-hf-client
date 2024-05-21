@@ -10,7 +10,7 @@ type ClientDB struct {
 	Name      string `json:"name,omitempty"`
 	CPF       string `json:"cpf,omitempty"`
 	Email     string `json:"email,omitempty"`
-	CreatedAt string `json:"created_at,omitempty"`
+	CreatedAt string `json:"createdAt,omitempty"`
 }
 
 type (
