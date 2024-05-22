@@ -1,0 +1,41 @@
+syntax = "proto3";
+option go_package = "fase-4-hf-client/client-proto";
+
+message CreateRequest {
+  string name = 1;
+  string cpf = 2;
+  string email = 3;
+}
+
+message CreateResponse {
+  string uuid = 1;
+  string name = 2;
+  string cpf = 3;
+  string email = 4;
+  string createdAt = 5;
+}
+
+message GetByIDRequest { int64 id = 1; }
+
+message GetByIDResponse {
+  string uuid = 1;
+  string name = 2;
+  string cpf = 3;
+  string email = 4;
+  string createdAt = 5;
+}
+
+message GetByCPFRequest { string cpf = 1; }
+
+message GetByCPFResponse {
+  string uuid = 1;
+  string name = 2;
+  string cpf = 3;
+  string email = 4;
+  string createdAt = 5;
+}
+
+service Client {
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc GetByCPF(GetByCPFRequest) returns (GetByCPFResponse);
+}
