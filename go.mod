@@ -3,7 +3,6 @@ module fase-4-hf-client
 go 1.22.0
 
 require (
-	github.com/aws/aws-sdk-go v1.51.9
 	github.com/aws/aws-sdk-go-v2 v1.27.0
 	github.com/aws/aws-sdk-go-v2/config v1.27.15
 	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.13.17
