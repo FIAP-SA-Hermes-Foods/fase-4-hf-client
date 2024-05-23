@@ -5,7 +5,7 @@
 * [Requirements](#Requirements)
 * [Installation](#Installation)
 * [Tests](#Tests)
-* [Others Microservices](#OthersMicroservices)
+* [Others Microservices](#Microservices)
 * [Documentation](#Documentation)
 
 
@@ -42,7 +42,7 @@ Execute the command below:
 ```bash
 $ make run-bdd
 ```
-### Others Microservices: 
+### Microservices: 
 
 * [Voucher](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-voucher)
 * [Product](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-product)
