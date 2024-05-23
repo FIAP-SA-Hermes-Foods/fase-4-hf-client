@@ -41,6 +41,12 @@ Execute the command below:
 ```bash
 $ make run-bdd
 ```
+### Others Microservices: 
+
+* [Voucher](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-voucher)
+* [Product](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-product)
+* [Order](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-order)
+* [Payament](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-payment)
 
 ### Documentation
 
@@ -51,4 +57,4 @@ $ make run-bdd
 * [Project structure](https://github.com/FIAP-SA-Hermes-Foods/fiap-hf-src/tree/main/docs/project_structure.md)
 * [Postman Collection](https://github.com/FIAP-SA-Hermes-Foods/fiap-hf-src/blob/main/infrastructure/postman_collection/hermes-foods.postman_collection.json)
 * [Contribution Guide](https://github.com/FIAP-SA-Hermes-Foods/fiap-hf-src/tree/main/docs/contribution.md)
-* Swagger: access on ```http://localhost:8083/swagger``` (only after running the **Installation** step).
+
