@@ -47,7 +47,7 @@ $ make run-bdd
 * [Voucher](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-voucher)
 * [Product](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-product)
 * [Order](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-order)
-* [Payament](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-payment)
+* [Payment](https://github.com/FIAP-SA-Hermes-Foods/fase-4-hf-payment)
 
 ### Documentation
 
