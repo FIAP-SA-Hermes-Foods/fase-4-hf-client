@@ -24,7 +24,7 @@ func (h *handlerGRPC) Handler() *handlerGRPC {
 	return h
 }
 
-func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.CreateResponse, error) {
+func (h *handlerGRPC) CreateClient(ctx context.Context, req *cp.CreateClientRequest) (*cp.CreateClientResponse, error) {
 
 	input := dto.RequestClient{
 		Name:  req.Name,
@@ -42,7 +42,7 @@ func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.Cr
 		return nil, nil
 	}
 
-	out := &cp.CreateResponse{
+	out := &cp.CreateClientResponse{
 		Uuid:      c.UUID,
 		Name:      c.Name,
 		Cpf:       c.CPF,
@@ -54,7 +54,7 @@ func (h *handlerGRPC) Create(ctx context.Context, req *cp.CreateRequest) (*cp.Cr
 
 }
 
-func (h *handlerGRPC) GetByCPF(ctx context.Context, req *cp.GetByCPFRequest) (*cp.GetByCPFResponse, error) {
+func (h *handlerGRPC) GetClientByCPF(ctx context.Context, req *cp.GetClientByCPFRequest) (*cp.GetClientByCPFResponse, error) {
 	c, err := h.app.GetClientByCPF(req.Cpf)
 
 	if err != nil {
@@ -65,7 +65,29 @@ func (h *handlerGRPC) GetByCPF(ctx context.Context, req *cp.GetByCPFRequest) (*c
 		return nil, nil
 	}
 
-	out := &cp.GetByCPFResponse{
+	out := &cp.GetClientByCPFResponse{
+		Uuid:      c.UUID,
+		Name:      c.Name,
+		Cpf:       c.CPF,
+		Email:     c.Email,
+		CreatedAt: c.CreatedAt,
+	}
+
+	return out, nil
+}
+
+func (h *handlerGRPC) GetClientByID(ctx context.Context, req *cp.GetClientByIDRequest) (*cp.GetClientByIDResponse, error) {
+	c, err := h.app.GetClientByID(req.Uuid)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if c == nil {
+		return nil, nil
+	}
+
+	out := &cp.GetClientByIDResponse{
 		Uuid:      c.UUID,
 		Name:      c.Name,
 		Cpf:       c.CPF,

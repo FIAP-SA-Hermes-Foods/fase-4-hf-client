@@ -32,3 +32,10 @@ func (c clientUseCase) GetClientByCPF(cpf string) error {
 
 	return nil
 }
+
+func (c clientUseCase) GetClientByID(uuid string) error {
+	if len(uuid) == 0 {
+		return errors.New("the uuid is not valid for consult")
+	}
+	return nil
+}

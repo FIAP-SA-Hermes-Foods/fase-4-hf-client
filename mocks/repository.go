@@ -11,6 +11,16 @@ type MockClientRepository struct {
 	WantErr     error
 }
 
+func (m MockClientRepository) GetClientByID(id string) (*dto.ClientDB, error) {
+	if m.WantErr != nil && strings.EqualFold("errGetClientByID", m.WantErr.Error()) {
+		return nil, m.WantErr
+	}
+	if strings.EqualFold(m.WantOutNull, "nilGetClientByID") {
+		return nil, nil
+	}
+	return m.WantOut, nil
+}
+
 func (m MockClientRepository) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 	if m.WantErr != nil && strings.EqualFold("errGetClientByCPF", m.WantErr.Error()) {
 		return nil, m.WantErr

@@ -10,6 +10,13 @@ type MockClientUseCase struct {
 	WantErr     error
 }
 
+func (m MockClientUseCase) GetClientByID(cpf string) error {
+	if m.WantErr != nil && strings.EqualFold("errGetClientByID", m.WantErr.Error()) {
+		return m.WantErr
+	}
+	return nil
+}
+
 func (m MockClientUseCase) GetClientByCPF(cpf string) error {
 	if m.WantErr != nil && strings.EqualFold("errGetClientByCPF", m.WantErr.Error()) {
 		return m.WantErr

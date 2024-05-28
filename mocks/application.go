@@ -11,6 +11,16 @@ type MockApplication struct {
 	WantOutNull string
 }
 
+func (m MockApplication) GetClientByID(id string) (*dto.OutputClient, error) {
+	if m.WantErr != nil && strings.EqualFold("errGetClientByID", m.WantErr.Error()) {
+		return nil, m.WantErr
+	}
+	if strings.EqualFold(m.WantOutNull, "nilGetClientByID") {
+		return nil, nil
+	}
+	return m.WantOut, nil
+}
+
 func (m MockApplication) GetClientByCPF(cpf string) (*dto.OutputClient, error) {
 	if m.WantErr != nil && strings.EqualFold("errGetClientByCPF", m.WantErr.Error()) {
 		return nil, m.WantErr
@@ -44,6 +54,13 @@ func (m MockApplicationRepostoryCallers) GetClientByCPFRepository(cpf string) (*
 	return m.WantOut, nil
 }
 
+func (m MockApplicationRepostoryCallers) GetClientByIDRepository(cpf string) (*dto.ClientDB, error) {
+	if m.WantErr != nil && strings.EqualFold("errGetClientByIDRepository", m.WantErr.Error()) {
+		return nil, m.WantErr
+	}
+	return m.WantOut, nil
+}
+
 func (m MockApplicationRepostoryCallers) SaveClientRepository(client dto.ClientDB) (*dto.ClientDB, error) {
 	if m.WantErr != nil && strings.EqualFold("errSaveClientRepository", m.WantErr.Error()) {
 		return nil, m.WantErr
@@ -58,6 +75,13 @@ type MockApplicationUseCaseCallers struct {
 
 func (m MockApplicationUseCaseCallers) GetClientByCPFUseCase(cpf string) error {
 	if m.WantErr != nil && strings.EqualFold("errGetClientByCPFUseCase", m.WantErr.Error()) {
+		return m.WantErr
+	}
+	return nil
+}
+
+func (m MockApplicationUseCaseCallers) GetClientByIDUseCase(cpf string) error {
+	if m.WantErr != nil && strings.EqualFold("errGetClientByIDUseCase", m.WantErr.Error()) {
 		return m.WantErr
 	}
 	return nil

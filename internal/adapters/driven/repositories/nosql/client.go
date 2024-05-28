@@ -11,18 +11,55 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-var _ repository.ClientRepository = (*userDB)(nil)
+var _ repository.ClientRepository = (*clientDB)(nil)
 
-type userDB struct {
+type clientDB struct {
 	Database  db.NoSQLDatabase
 	tableName string
 }
 
-func NewClientRepository(database db.NoSQLDatabase, tableName string) *userDB {
-	return &userDB{Database: database, tableName: tableName}
+func NewClientRepository(database db.NoSQLDatabase, tableName string) *clientDB {
+	return &clientDB{Database: database, tableName: tableName}
 }
 
-func (c *userDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
+func (p *clientDB) GetClientByID(uuid string) (*dto.ClientDB, error) {
+	partitionKeyName := "uuid"
+
+	input := &dynamodb.QueryInput{
+		TableName:              aws.String(p.tableName),
+		KeyConditionExpression: aws.String("#pk = :value"),
+		ExpressionAttributeNames: map[string]string{
+			"#pk": partitionKeyName,
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":value": &types.AttributeValueMemberS{Value: uuid},
+		},
+	}
+
+	result, err := p.Database.Query(input)
+	if err != nil {
+		return nil, err
+	}
+
+	var clientList = make([]dto.ClientDB, 0)
+	if result != nil {
+		for _, item := range result.Items {
+			var pDb dto.ClientDB
+			if err := attributevalue.UnmarshalMap(item, &pDb); err != nil {
+				return nil, err
+			}
+			clientList = append(clientList, pDb)
+		}
+	}
+
+	if len(clientList) > 0 {
+		return &clientList[0], nil
+	}
+
+	return nil, nil
+}
+
+func (c *clientDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 	filter := "cpf = :value"
 	attrSearch := map[string]types.AttributeValue{
 		":value": &types.AttributeValueMemberS{
@@ -41,23 +78,28 @@ func (c *userDB) GetClientByCPF(cpf string) (*dto.ClientDB, error) {
 		return nil, err
 	}
 
-	var userList = make([]dto.ClientDB, 0)
-	for _, item := range result.Items {
-		var c dto.ClientDB
-		if err := attributevalue.UnmarshalMap(item, &c); err != nil {
-			return nil, err
+	var clientList = make([]dto.ClientDB, 0)
+	if result != nil {
+		for _, item := range result.Items {
+			if item == nil {
+				continue
+			}
+			var c dto.ClientDB
+			if err := attributevalue.UnmarshalMap(item, &c); err != nil {
+				return nil, err
+			}
+			clientList = append(clientList, c)
 		}
-		userList = append(userList, c)
 	}
 
-	if len(userList) > 0 {
-		return &userList[0], nil
+	if len(clientList) > 0 {
+		return &clientList[0], nil
 	}
 
 	return nil, nil
 }
 
-func (c *userDB) SaveClient(client dto.ClientDB) (*dto.ClientDB, error) {
+func (c *clientDB) SaveClient(client dto.ClientDB) (*dto.ClientDB, error) {
 
 	putItem := map[string]types.AttributeValue{
 		"uuid": &types.AttributeValueMemberS{

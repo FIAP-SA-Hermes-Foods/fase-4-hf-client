@@ -22,8 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ClientClient interface {
-	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
-	GetByCPF(ctx context.Context, in *GetByCPFRequest, opts ...grpc.CallOption) (*GetByCPFResponse, error)
+	GetClientByID(ctx context.Context, in *GetClientByIDRequest, opts ...grpc.CallOption) (*GetClientByIDResponse, error)
+	GetClientByCPF(ctx context.Context, in *GetClientByCPFRequest, opts ...grpc.CallOption) (*GetClientByCPFResponse, error)
+	CreateClient(ctx context.Context, in *CreateClientRequest, opts ...grpc.CallOption) (*CreateClientResponse, error)
 }
 
 type clientClient struct {
@@ -34,18 +35,27 @@ func NewClientClient(cc grpc.ClientConnInterface) ClientClient {
 	return &clientClient{cc}
 }
 
-func (c *clientClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
-	out := new(CreateResponse)
-	err := c.cc.Invoke(ctx, "/Client/Create", in, out, opts...)
+func (c *clientClient) GetClientByID(ctx context.Context, in *GetClientByIDRequest, opts ...grpc.CallOption) (*GetClientByIDResponse, error) {
+	out := new(GetClientByIDResponse)
+	err := c.cc.Invoke(ctx, "/Client/GetClientByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *clientClient) GetByCPF(ctx context.Context, in *GetByCPFRequest, opts ...grpc.CallOption) (*GetByCPFResponse, error) {
-	out := new(GetByCPFResponse)
-	err := c.cc.Invoke(ctx, "/Client/GetByCPF", in, out, opts...)
+func (c *clientClient) GetClientByCPF(ctx context.Context, in *GetClientByCPFRequest, opts ...grpc.CallOption) (*GetClientByCPFResponse, error) {
+	out := new(GetClientByCPFResponse)
+	err := c.cc.Invoke(ctx, "/Client/GetClientByCPF", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clientClient) CreateClient(ctx context.Context, in *CreateClientRequest, opts ...grpc.CallOption) (*CreateClientResponse, error) {
+	out := new(CreateClientResponse)
+	err := c.cc.Invoke(ctx, "/Client/CreateClient", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +66,9 @@ func (c *clientClient) GetByCPF(ctx context.Context, in *GetByCPFRequest, opts .
 // All implementations must embed UnimplementedClientServer
 // for forward compatibility
 type ClientServer interface {
-	Create(context.Context, *CreateRequest) (*CreateResponse, error)
-	GetByCPF(context.Context, *GetByCPFRequest) (*GetByCPFResponse, error)
+	GetClientByID(context.Context, *GetClientByIDRequest) (*GetClientByIDResponse, error)
+	GetClientByCPF(context.Context, *GetClientByCPFRequest) (*GetClientByCPFResponse, error)
+	CreateClient(context.Context, *CreateClientRequest) (*CreateClientResponse, error)
 	mustEmbedUnimplementedClientServer()
 }
 
@@ -65,11 +76,14 @@ type ClientServer interface {
 type UnimplementedClientServer struct {
 }
 
-func (UnimplementedClientServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+func (UnimplementedClientServer) GetClientByID(context.Context, *GetClientByIDRequest) (*GetClientByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClientByID not implemented")
 }
-func (UnimplementedClientServer) GetByCPF(context.Context, *GetByCPFRequest) (*GetByCPFResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetByCPF not implemented")
+func (UnimplementedClientServer) GetClientByCPF(context.Context, *GetClientByCPFRequest) (*GetClientByCPFResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClientByCPF not implemented")
+}
+func (UnimplementedClientServer) CreateClient(context.Context, *CreateClientRequest) (*CreateClientResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateClient not implemented")
 }
 func (UnimplementedClientServer) mustEmbedUnimplementedClientServer() {}
 
@@ -84,38 +98,56 @@ func RegisterClientServer(s grpc.ServiceRegistrar, srv ClientServer) {
 	s.RegisterService(&Client_ServiceDesc, srv)
 }
 
-func _Client_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateRequest)
+func _Client_GetClientByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetClientByIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClientServer).Create(ctx, in)
+		return srv.(ClientServer).GetClientByID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Client/Create",
+		FullMethod: "/Client/GetClientByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServer).Create(ctx, req.(*CreateRequest))
+		return srv.(ClientServer).GetClientByID(ctx, req.(*GetClientByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Client_GetByCPF_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetByCPFRequest)
+func _Client_GetClientByCPF_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetClientByCPFRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClientServer).GetByCPF(ctx, in)
+		return srv.(ClientServer).GetClientByCPF(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Client/GetByCPF",
+		FullMethod: "/Client/GetClientByCPF",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClientServer).GetByCPF(ctx, req.(*GetByCPFRequest))
+		return srv.(ClientServer).GetClientByCPF(ctx, req.(*GetClientByCPFRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Client_CreateClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateClientRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientServer).CreateClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/Client/CreateClient",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientServer).CreateClient(ctx, req.(*CreateClientRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,12 +160,16 @@ var Client_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ClientServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Create",
-			Handler:    _Client_Create_Handler,
+			MethodName: "GetClientByID",
+			Handler:    _Client_GetClientByID_Handler,
 		},
 		{
-			MethodName: "GetByCPF",
-			Handler:    _Client_GetByCPF_Handler,
+			MethodName: "GetClientByCPF",
+			Handler:    _Client_GetClientByCPF_Handler,
+		},
+		{
+			MethodName: "CreateClient",
+			Handler:    _Client_CreateClient_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
