@@ -2,6 +2,10 @@ package application
 
 import "fase-4-hf-client/internal/core/domain/entity/dto"
 
+func (app application) GetClientByIDUseCase(uuid string) error {
+	return app.clientUC.GetClientByID(uuid)
+}
+
 func (app application) GetClientByCPFUseCase(cpf string) error {
 	return app.clientUC.GetClientByCPF(cpf)
 }

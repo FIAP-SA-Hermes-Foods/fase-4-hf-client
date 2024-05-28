@@ -5,6 +5,7 @@ import (
 )
 
 type ClientRepository interface {
+	GetClientByID(uuid string) (*dto.ClientDB, error)
 	GetClientByCPF(cpf string) (*dto.ClientDB, error)
 	SaveClient(client dto.ClientDB) (*dto.ClientDB, error)
 }

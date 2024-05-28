@@ -1,6 +1,8 @@
 syntax = "proto3";
 option go_package = "fase-4-hf-client/client-proto";
 
+// start CLIENT setup
+
 message CreateClientRequest {
   string name = 1;
   string cpf = 2;
@@ -15,7 +17,7 @@ message CreateClientResponse {
   string createdAt = 5;
 }
 
-message GetClientByIDRequest { int64 id = 1; }
+message GetClientByIDRequest { string uuid = 1; }
 
 message GetClientByIDResponse {
   string uuid = 1;
@@ -36,6 +38,9 @@ message GetClientByCPFResponse {
 }
 
 service Client {
-  rpc CreateClient(CreateClientRequest) returns (CreateClientResponse);
+  rpc GetClientByID(GetClientByIDRequest) returns (GetClientByIDResponse);
   rpc GetClientByCPF(GetClientByCPFRequest) returns (GetClientByCPFResponse);
+  rpc CreateClient(CreateClientRequest) returns (CreateClientResponse);
 }
+
+// end CLIENT setup

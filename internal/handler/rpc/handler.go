@@ -75,3 +75,25 @@ func (h *handlerGRPC) GetClientByCPF(ctx context.Context, req *cp.GetClientByCPF
 
 	return out, nil
 }
+
+func (h *handlerGRPC) GetClientByID(ctx context.Context, req *cp.GetClientByIDRequest) (*cp.GetClientByIDResponse, error) {
+	c, err := h.app.GetClientByID(req.Uuid)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if c == nil {
+		return nil, nil
+	}
+
+	out := &cp.GetClientByIDResponse{
+		Uuid:      c.UUID,
+		Name:      c.Name,
+		Cpf:       c.CPF,
+		Email:     c.Email,
+		CreatedAt: c.CreatedAt,
+	}
+
+	return out, nil
+}

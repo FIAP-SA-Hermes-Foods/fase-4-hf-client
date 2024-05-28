@@ -15,6 +15,97 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+// go test -v -count=1 -failfast -cover -run ^Test_GetClientByID$
+func Test_GetClientByID(t *testing.T) {
+	printArt()
+	ctx := context.Background()
+
+	type args struct {
+		id string
+	}
+
+	tests := []struct {
+		name        string
+		args        args
+		ctx         context.Context
+		WantOutput  *dto.ClientDB
+		mockDB      *mocks.MockDbNoSQL
+		isWantError bool
+	}{
+		{
+			name: "err_scanning_item",
+			args: args{
+				id: "",
+			},
+			ctx:        ctx,
+			WantOutput: &dto.ClientDB{},
+			mockDB: &mocks.MockDbNoSQL{
+				WantResultQuery:   &dynamodb.QueryOutput{},
+				WantResultPutItem: &dynamodb.PutItemOutput{},
+				WantErr:           errors.New("errQuery"),
+			},
+
+			isWantError: true,
+		},
+		{
+			name: "sucess",
+			args: args{
+				id: "a0all-b000-caa000-daa00",
+			},
+			ctx: ctx,
+			WantOutput: &dto.ClientDB{
+				UUID:      "a0all-b000-caa000-daa00",
+				Name:      "some_name",
+				CPF:       "000000000",
+				Email:     "someemail@some.com",
+				CreatedAt: "2001-01-01 15:30:20",
+			},
+			mockDB: &mocks.MockDbNoSQL{
+				WantResultQuery: &dynamodb.QueryOutput{
+					Items: []map[string]types.AttributeValue{
+						{
+							"uuid": &types.AttributeValueMemberS{
+								Value: "a0all-b000-caa000-daa00",
+							},
+							"name": &types.AttributeValueMemberS{
+								Value: "some_name",
+							},
+							"cpf": &types.AttributeValueMemberS{
+								Value: "000000000",
+							},
+							"email": &types.AttributeValueMemberS{
+								Value: "someemail@some.com",
+							},
+							"createdAt": &types.AttributeValueMemberS{
+								Value: "2001-01-01 15:30:20",
+							},
+						},
+					},
+				},
+				WantResultPutItem: &dynamodb.PutItemOutput{},
+				WantErr:           nil,
+			},
+			isWantError: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			repo := NewClientRepository(tc.mockDB, "")
+
+			out, err := repo.GetClientByID(tc.args.id)
+
+			if (!tc.isWantError) && err != nil {
+				t.Errorf("was not suppose to have an error here and %v got", err)
+			}
+
+			if out != nil && (ps.MarshalString(out) != ps.MarshalString(tc.WantOutput)) {
+				t.Errorf("was not suppose to have:\n%s\n and got:\n%s\n", ps.MarshalString(tc.WantOutput), ps.MarshalString(out))
+			}
+		})
+	}
+}
+
 // go test -v -count=1 -failfast -cover -run ^Test_GetClientByCPF$
 func Test_GetClientByCPF(t *testing.T) {
 	printArt()

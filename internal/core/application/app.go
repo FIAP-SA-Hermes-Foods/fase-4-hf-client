@@ -13,6 +13,7 @@ import (
 )
 
 type Application interface {
+	GetClientByID(uuid string) (*dto.OutputClient, error)
 	GetClientByCPF(cpf string) (*dto.OutputClient, error)
 	SaveClient(reqClient dto.RequestClient) (*dto.OutputClient, error)
 }
@@ -24,6 +25,38 @@ type application struct {
 
 func NewApplication(clientRepo repository.ClientRepository, clientUC useCase.ClientUseCase) Application {
 	return application{clientRepo: clientRepo, clientUC: clientUC}
+}
+
+func (app application) GetClientByID(uuid string) (*dto.OutputClient, error) {
+	l.Infof("GetClientByIDApp: ", " | ", uuid)
+	if err := app.GetClientByIDUseCase(uuid); err != nil {
+		l.Errorf("GetClientByIDApp error: ", " | ", err)
+		return nil, err
+	}
+
+	cOutDb, err := app.GetClientByIDRepository(uuid)
+
+	if err != nil {
+		l.Errorf("GetClientByIDApp error: ", " | ", err)
+		return nil, err
+	}
+
+	if cOutDb == nil {
+		l.Infof("GetClientByIDApp output: ", " | ", cOutDb)
+		return nil, nil
+	}
+
+	out := &dto.OutputClient{
+		UUID:      cOutDb.UUID,
+		Name:      cOutDb.Name,
+		CPF:       cOutDb.CPF,
+		Email:     cOutDb.Email,
+		CreatedAt: cOutDb.CreatedAt,
+	}
+
+	l.Infof("GetClientByIDApp output: ", " | ", ps.MarshalString(out))
+	return out, err
+
 }
 
 func (app application) GetClientByCPF(cpf string) (*dto.OutputClient, error) {
